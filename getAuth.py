@@ -43,7 +43,7 @@ def first_page(first_request):
 
 def after_pages(next_after_id):
     if next_after_id == None:
-        return "Last page"
+        return "Final page"
     else:
         print(next_after_id)
         response = requests.get(f"https://oauth.reddit.com/user/{secrets.username}/upvoted/?count=100&after={next_after_id}", headers=headers)
@@ -80,14 +80,8 @@ subreddit_name_prefixed, title, url_overridden_by_dest, url = [], [], [], []
 first_page(base)
 after_pages(second_page_id)
 
-
-
-copy_of_url = url[:]
-copy_of_subreddit_name_prefixed = subreddit_name_prefixed[:]
-copy_of_title = title[:]
-copy_of_url_overridden_by_dest = url_overridden_by_dest[:]
 # Save a txt of all urls
-save_urls(copy_of_url)
-save_subreddits(copy_of_subreddit_name_prefixed)
-save_titles(copy_of_title)
-save_urls_overridden(copy_of_url_overridden_by_dest)
+save_urls(sorted(set(url.copy())))
+save_subreddits(sorted(set(subreddit_name_prefixed.copy())))
+save_titles(sorted(set(title.copy())))
+save_urls_overridden(sorted(set(url_overridden_by_dest.copy())))
