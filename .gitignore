@@ -1,3 +1,4 @@
+# Python ignores
 secrets.py
 subreddits.txt
 titles.txt
@@ -6,3 +7,10 @@ urls.txt
 .vscode
 __pycache__
 .venv
+
+# Node Ignore
+posts.json
+node_modules
+.env
+.DS_Store
+package-lock.json
