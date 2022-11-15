@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import fs from 'fs';
+import PromptSync from 'prompt-sync';
 
 // Create the Authenthication
 export const getAccessToken = async () => {
@@ -25,7 +26,43 @@ export const getAccessToken = async () => {
 };
 
 // Get data from landing page
-export const getFirstPage = async (access_token, token_type) => {
+export const getFrontPage = async (access_token, token_type) => {
+  const fetchUpvotedPage = await fetch(`https://oauth.reddit.com/`, {
+    method: 'GET',
+    headers: {
+      Authorization: `${token_type} ${access_token}`,
+      'User-Agent': 'ChangeMeClient/0.1 by YourUsername',
+    },
+  });
+  return fetchUpvotedPage.json();
+};
+
+// Get data from Hot page
+export const getPagesHot = async (access_token, token_type) => {
+  const fetchHotPage = await fetch('https://oauth.reddit.com/hot/', {
+    method: 'GET',
+    headers: {
+      Authorization: `${token_type} ${access_token}`,
+      'User-Agent': 'ChangeMeClient/0.1 by YourUsername',
+    },
+  });
+  return fetchHotPage.json();
+};
+
+// Get data from Top page
+export const getPagesTop = async (access_token, token_type) => {
+  const fetchTopPage = await fetch('https://oauth.reddit.com/top/', {
+    method: 'GET',
+    headers: {
+      Authorization: `${token_type} ${access_token}`,
+      'User-Agent': 'ChangeMeClient/0.1 by YourUsername',
+    },
+  });
+  return fetchTopPage.json();
+};
+
+// Get data from first upvoted page
+export const getFirstUpvotedPage = async (access_token, token_type) => {
   const fetchUpvotedPage = await fetch(
     `https://oauth.reddit.com/user/${process.env.redditUsername}/upvoted`,
     {
@@ -36,11 +73,11 @@ export const getFirstPage = async (access_token, token_type) => {
       },
     }
   );
-  const landingPage = fetchUpvotedPage.json();
-  return landingPage;
+  console.log('Fetched first page of upvoted posts');
+  return fetchUpvotedPage.json();
 };
 
-export const getRestOfPagesPosts = async (
+export const getRestOfUpvotedPagesPosts = async (
   access_token,
   token_type,
   currentPage,
@@ -48,9 +85,9 @@ export const getRestOfPagesPosts = async (
 ) => {
   const newPostsArray = currentPostsArray;
   if (currentPage == null) {
+    console.log('Done fetching upvoted posts');
     return newPostsArray;
   } else {
-    console.log(currentPage);
     const nextPagesResponse = await fetch(
       `https://oauth.reddit.com/user/${process.env.redditUsername}/upvoted/?count=100&after=${currentPage}`,
       {
@@ -76,7 +113,12 @@ export const getRestOfPagesPosts = async (
       });
     });
 
-    return getRestOfPagesPosts(access_token, token_type, after, newPostsArray);
+    return getRestOfUpvotedPagesPosts(
+      access_token,
+      token_type,
+      after,
+      newPostsArray
+    );
   }
 };
 
@@ -97,7 +139,7 @@ export const getFirstPagePost = async (children) => {
 };
 
 // Save to Obj
-export const saveArray = (savedPosts) => {
+export const saveArray = async (savedPosts) => {
   fs.writeFile(
     'posts.json',
     JSON.stringify(savedPosts, null, 2),
@@ -110,6 +152,7 @@ export const saveArray = (savedPosts) => {
 
 const readAllPosts = () => {
   const posts = fs.readFileSync('posts.json', 'utf-8');
+  if (posts.length == 0) return 'No posts could be read.';
   return JSON.parse(posts);
 };
 
@@ -129,9 +172,16 @@ const shuffleArray = (postsArray, numOfPosts) => {
 };
 
 // Send to Discord
-export const sendToDiscord = async (amountOfPosts) => {
+export const sendToDiscord = async () => {
+  const prompt = PromptSync();
+  let amountOfPosts;
   // Read all entries
   const entries = readAllPosts();
+  if (entries.length > 100) {
+    amountOfPosts = prompt('How many posts would you like to send? ');
+  } else {
+    amountOfPosts = entries.length;
+  }
   // Randomise the amountOfPosts
   const arrayToPost = shuffleArray(entries, amountOfPosts);
   // send each

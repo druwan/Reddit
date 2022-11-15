@@ -1,8 +1,11 @@
 import {
   getAccessToken,
-  getFirstPage,
   getFirstPagePost,
-  getRestOfPagesPosts,
+  getFirstUpvotedPage,
+  getFrontPage,
+  getPagesHot,
+  getPagesTop,
+  getRestOfUpvotedPagesPosts,
   saveArray,
   sendToDiscord,
 } from './functions/helperFunctions.js';
@@ -10,21 +13,27 @@ import PromptSync from 'prompt-sync';
 
 // Make selection
 const prompt = PromptSync();
-console.log('1. Update List\n2. Send to Discord\n3. Quit');
+console.log(
+  '1. Send posts to Discord\n2. Fetch Upvoted Posts\n3. Fetch Hot Page\n4. Fetch Top page\n5. Fetch Front Page\n6. Quit'
+);
 let option = prompt();
 
 while (option != undefined) {
   if (option == 1) {
+    // Send to Discord
+    await sendToDiscord();
+    option = undefined;
+  } else if (option == 2) {
     // Get Access Token
     const { access_token, token_type } = await getAccessToken();
     // Access user landingPage
-    const { data } = await getFirstPage(access_token, token_type);
+    const { data } = await getFirstUpvotedPage(access_token, token_type);
     // Includes the id of 2nd page and first 100 posts
     const { after, children } = data;
     // Get first page post, -> [posts]
     const firstPagesPosts = await getFirstPagePost(children);
     // Get next page post and id of next page -> recursion :)
-    const restOfPagesPosts = await getRestOfPagesPosts(
+    const restOfPagesPosts = await getRestOfUpvotedPagesPosts(
       access_token,
       token_type,
       after,
@@ -33,11 +42,28 @@ while (option != undefined) {
     // Saves to JSON file
     saveArray(restOfPagesPosts);
     option = undefined;
-  } else if (option == 2) {
-    const amountOfPosts = prompt('How many posts? ');
-    await sendToDiscord(amountOfPosts);
-    option = undefined;
   } else if (option == 3) {
+    const { access_token, token_type } = await getAccessToken();
+    const { data } = await getPagesHot(access_token, token_type);
+    const { children } = data;
+    const hotPages = await getFirstPagePost(children);
+    await saveArray(hotPages);
+    option = undefined;
+  } else if (option == 4) {
+    const { access_token, token_type } = await getAccessToken();
+    const { data } = await getPagesTop(access_token, token_type);
+    const { children } = data;
+    const topPages = await getFirstPagePost(children);
+    await saveArray(topPages);
+    option = undefined;
+  } else if (option == 5) {
+    const { access_token, token_type } = await getAccessToken();
+    const { data } = await getFrontPage(access_token, token_type);
+    const { children } = data;
+    const frontPage = await getFirstPagePost(children);
+    await saveArray(frontPage);
+    option = undefined;
+  } else if (option == 6) {
     option = undefined;
   }
 }
