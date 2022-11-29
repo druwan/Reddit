@@ -14,7 +14,7 @@ import PromptSync from 'prompt-sync';
 // Make selection
 const prompt = PromptSync();
 console.log(
-  '1. Send posts to Discord\n2. Fetch Upvoted Posts\n3. Fetch Hot Page\n4. Fetch Top page\n5. Fetch Front Page\n6. Quit'
+  '1. Send posts to Discord\n2. Fetch Upvoted Posts\n3. Fetch Hot Page\n4. Fetch Top Page\n5. Fetch Front Page\n6. Quit'
 );
 let option = prompt();
 
