@@ -27,7 +27,7 @@ export const getAccessToken = async () => {
 
 // Get data from landing page
 export const getFrontPage = async (access_token, token_type) => {
-  const fetchUpvotedPage = await fetch(`https://oauth.reddit.com/`, {
+  const fetchUpvotedPage = await fetch(`https://oauth.reddit.com/best`, {
     method: 'GET',
     headers: {
       Authorization: `${token_type} ${access_token}`,
