@@ -16,15 +16,14 @@ console.log(
 );
 let option = prompt();
 
-// Get Access Token
-const { access_token, token_type } = await getAccessToken();
-
 while (option != undefined) {
   if (option == 1) {
     // Send to Discord
     await sendToDiscord();
     option = undefined;
   } else if (option == 2) {
+    // Get Access Token
+    const { access_token, token_type } = await getAccessToken();
     // Access user landingPage
     const { data } = await getFirstUpvotedPage(access_token, token_type);
     // Includes the id of 2nd page and first 100 posts
