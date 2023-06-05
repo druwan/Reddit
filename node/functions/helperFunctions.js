@@ -1,4 +1,3 @@
-import { log } from 'console';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import fs from 'fs';
