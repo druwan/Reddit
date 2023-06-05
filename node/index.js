@@ -20,7 +20,6 @@ let option = prompt();
 const { access_token, token_type } = await getAccessToken();
 
 while (option != undefined) {
-  option = 3;
   if (option == 1) {
     // Send to Discord
     await sendToDiscord();
