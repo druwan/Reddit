@@ -26,7 +26,6 @@ export const getAccessToken = async () => {
 };
 
 // Get data from Best, Hot & Top
-
 export const getPages = async (access_token, token_type, page) => {
   const fetchPages = await fetch(`https://oauth.reddit.com/${page}`, {
     method: 'GET',
