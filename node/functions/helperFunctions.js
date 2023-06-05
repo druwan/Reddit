@@ -1,3 +1,4 @@
+import { log } from 'console';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import fs from 'fs';
@@ -103,19 +104,12 @@ export const getRestOfUpvotedPagesPosts = async (
     const { after, children } = data;
 
     children.map((child) => {
-      const {
-        permalink,
-        title,
-        subreddit_name_prefixed,
-        url_overridden_by_dest,
-        url,
-      } = child.data;
+      const { permalink, title, subreddit_name_prefixed, url } = child.data;
       newPostsArray.push({
         permalink,
         subreddit_name_prefixed,
         title,
         url,
-        url_overridden_by_dest,
       });
     });
 
@@ -132,19 +126,12 @@ export const getRestOfUpvotedPagesPosts = async (
 export const getFirstPagePost = async (children) => {
   let postArray = [];
   children.map((child) => {
-    const {
-      permalink,
-      title,
-      subreddit_name_prefixed,
-      url_overridden_by_dest,
-      url,
-    } = child.data;
+    const { permalink, title, subreddit_name_prefixed, url } = child.data;
     postArray.push({
       permalink,
       subreddit_name_prefixed,
       title,
       url,
-      url_overridden_by_dest,
     });
   });
   return postArray;
@@ -168,21 +155,6 @@ const readAllPosts = () => {
   return JSON.parse(posts);
 };
 
-// https://stackoverflow.com/a/19270021/19091959
-// const shuffleArray = (postsArray, numOfPosts) => {
-//   let result = new Array(numOfPosts),
-//     len = postsArray.length,
-//     taken = new Array(len);
-//   if (numOfPosts > len)
-//     throw new RangeError('shuffleArray: more elements taken than available');
-//   while (numOfPosts--) {
-//     var x = Math.floor(Math.random() * len);
-//     result[numOfPosts] = postsArray[x in taken ? taken[x] : x];
-//     taken[x] = --len in taken ? taken[len] : len;
-//   }
-//   return result;
-// };
-
 // Send to Discord
 export const sendToDiscord = async () => {
   const prompt = PromptSync();
@@ -201,28 +173,20 @@ export const sendToDiscord = async () => {
   arrayToPost.map(async (post, index) => {
     // 5 second delay on each post.
     setTimeout(() => {
-      const {
-        permalink,
-        title,
-        subreddit_name_prefixed,
-        url,
-        url_overridden_by_dest,
-      } = post;
-
+      const { permalink, title, subreddit_name_prefixed, url } = post;
       const postData = {
         embeds: [
           {
             author: {
-              name: `${title}`,
+              name: `${subreddit_name_prefixed}`,
               url: `https://reddit.com${permalink}`,
             },
-            title: `${title}`,
             url: `${url}`,
             image: { url: `${url}` },
           },
         ],
-        username: `${subreddit_name_prefixed}`,
-        avatar_url: `${url_overridden_by_dest}`,
+        username: `${title}`,
+        avatar_url: `${url}`,
       };
 
       const options = {
