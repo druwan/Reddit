@@ -2,6 +2,6 @@
 
 Wanted to learn how to use the reddit api and combine it with discord webhooks.
 
-Loop through all the posts I have upvoted and saves the title, subreddit and url for the posts.
+Loop through either all the posts I have upvoted, or the *best, top, hot* pages and saves the title, subreddit and url for the posts.
 
 I first wrote the python script in the beginning of my programming career. Then I rewrote the project in node.
