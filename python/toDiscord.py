@@ -22,3 +22,5 @@ def sendLinksToDiscord():
         requests.post(secrets.Discord_Webhook, data=data)
         time.sleep(5)
         i += 1
+
+sendLinksToDiscord()
