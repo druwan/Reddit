@@ -5,6 +5,12 @@ on:
     branches: master
   schedule:
     - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      option:
+        description: 'Best page'
+        required: true
+        default: '3'
 
 jobs:
   send-to-discord-pipe:
@@ -17,8 +23,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
+
       - name: Install packages
         run: npm install
+
       - name: Run script
         run: node index.js
 
