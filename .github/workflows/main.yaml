@@ -1,6 +1,8 @@
 name: Send to Discord
 
 on:
+  push:
+    branches: master
   schedule:
     - cron: '*/5 * * * *'
 
