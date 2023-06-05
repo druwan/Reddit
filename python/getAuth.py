@@ -21,12 +21,6 @@ def save_titles(list1):
         link_file.write(f"{link}\n")
     link_file.close()
 
-def save_urls_overridden(list1):
-    link_file = open("url_overridden_by_dest.txt", "w")
-    for link in list1:
-        link_file.write(f"{link}\n")
-    link_file.close()
-
 def first_page(first_request):
     i = 0
     while i < first_request.json()["data"]["dist"]:
@@ -35,8 +29,6 @@ def first_page(first_request):
                 subreddit_name_prefixed.append(first_request.json()["data"]["children"][i]["data"][key])
             if key == "title":
                 title.append(first_request.json()["data"]["children"][i]["data"][key])
-            if key == "url_overridden_by_dest":
-                url_overridden_by_dest.append(first_request.json()["data"]["children"][i]["data"][key])
             if key == "url":
                 url.append(first_request.json()["data"]["children"][i]["data"][key])
         i += 1
@@ -54,8 +46,6 @@ def after_pages(next_after_id):
             for key, value in response.json()["data"]["children"][i]["data"].items():
                 if key == "subreddit_name_prefixed":
                     subreddit_name_prefixed.append(response.json()["data"]["children"][i]["data"][key])
-                if key == "url_overridden_by_dest":
-                    url_overridden_by_dest.append(response.json()["data"]["children"][i]["data"][key])
                 if key == "title":
                     title.append(response.json()["data"]["children"][i]["data"][key])
                 if key == "url":
@@ -75,13 +65,12 @@ headers = {"Authorization": "bearer" + " " + access_token, "User-Agent": "Change
 base = requests.get(f"https://oauth.reddit.com/user/{secrets.username}/upvoted/", headers=headers)
 
 second_page_id = base.json()["data"]["after"]
-subreddit_name_prefixed, title, url_overridden_by_dest, url = [], [], [], []
+subreddit_name_prefixed, title, url = [], [], []
 
 first_page(base)
 after_pages(second_page_id)
 
 # Save a txt of all urls
-save_urls(sorted(set(url.copy())))
-save_subreddits(sorted(set(subreddit_name_prefixed.copy())))
-save_titles(sorted(set(title.copy())))
-save_urls_overridden(sorted(set(url_overridden_by_dest.copy())))
+save_urls(sorted(set(url.copy()), key=str.casefold))
+save_subreddits(sorted(set(subreddit_name_prefixed.copy()), key=str.casefold))
+save_titles(sorted(set(title.copy()), key=str.casefold))
