@@ -25,40 +25,17 @@ export const getAccessToken = async () => {
   return accessToken;
 };
 
-// Get data from landing page
-export const getFrontPage = async (access_token, token_type) => {
-  const fetchUpvotedPage = await fetch(`https://oauth.reddit.com/best`, {
-    method: 'GET',
-    headers: {
-      Authorization: `${token_type} ${access_token}`,
-      'User-Agent': 'ChangeMeClient/0.1 by YourUsername',
-    },
-  });
-  return fetchUpvotedPage.json();
-};
+// Get data from Best, Hot & Top
 
-// Get data from Hot page
-export const getPagesHot = async (access_token, token_type) => {
-  const fetchHotPage = await fetch('https://oauth.reddit.com/hot/', {
+export const getPages = async (access_token, token_type, page) => {
+  const fetchPages = await fetch(`https://oauth.reddit.com/${page}`, {
     method: 'GET',
     headers: {
       Authorization: `${token_type} ${access_token}`,
       'User-Agent': 'ChangeMeClient/0.1 by YourUsername',
     },
   });
-  return fetchHotPage.json();
-};
-
-// Get data from Top page
-export const getPagesTop = async (access_token, token_type) => {
-  const fetchTopPage = await fetch('https://oauth.reddit.com/top/', {
-    method: 'GET',
-    headers: {
-      Authorization: `${token_type} ${access_token}`,
-      'User-Agent': 'ChangeMeClient/0.1 by YourUsername',
-    },
-  });
-  return fetchTopPage.json();
+  return fetchPages.json();
 };
 
 // Get data from first upvoted page
