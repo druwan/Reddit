@@ -3,8 +3,8 @@ name: Send to Discord
 on:
   push:
     branches: master
-  schedule:
-    - cron: '* */6 * * *'
+  # schedule:
+  #  - cron: '* */6 * * *'
 
 jobs:
   send-to-discord-pipe:
