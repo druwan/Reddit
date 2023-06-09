@@ -149,17 +149,16 @@ export const sendToDiscord = async () => {
     // 5 second delay on each post.
     setTimeout(() => {
       const { permalink, title, subreddit_name_prefixed, url } = post;
-      const url_regex = /.gifv/i;
       const postData = {
         embeds: [
           {
             author: {
-              name: `${title}`,
+              name: `https://reddit.com${permalink}`,
               url: `https://reddit.com${permalink}`,
             },
             title: `${title}`,
             url: `${url}`,
-            image: { url: `${url.replace(url_regex, '.mp4')}` },
+            image: { url: `${url}` },
           },
         ],
         username: `${subreddit_name_prefixed}`,
