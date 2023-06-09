@@ -149,18 +149,20 @@ export const sendToDiscord = async () => {
     // 5 second delay on each post.
     setTimeout(() => {
       const { permalink, title, subreddit_name_prefixed, url } = post;
+      const url_regex = /.gifv/i;
       const postData = {
         embeds: [
           {
             author: {
-              name: `${subreddit_name_prefixed}`,
+              name: `${title}`,
               url: `https://reddit.com${permalink}`,
             },
+            title: `${title}`,
             url: `${url}`,
-            image: { url: `${url}` },
+            image: { url: `${url.replace(url_regex, '.mp4')}` },
           },
         ],
-        username: `${title}`,
+        username: `${subreddit_name_prefixed}`,
         avatar_url: `${url}`,
       };
 
@@ -173,6 +175,6 @@ export const sendToDiscord = async () => {
       };
 
       fetch(process.env.discordWebhook, options);
-    }, 5000 * index);
+    }, 1500 * index);
   });
 };
