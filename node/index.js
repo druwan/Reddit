@@ -12,7 +12,7 @@ import PromptSync from 'prompt-sync';
 // Make selection
 const prompt = PromptSync();
 console.log(
-  '1. Send to Disc\n2. Upvoted posts\n3. Hot page\n4. Top page\n5. Best page\n6. Quit'
+  '\n1. Discord\n2. Upvoted\n3. Hot\n4. Top\n5. Best\n6. New\n7. Quit'
 );
 let option = prompt();
 
@@ -62,6 +62,13 @@ while (option != undefined) {
     await saveArray(frontPage);
     option = undefined;
   } else if (option == 6) {
+    const { access_token, token_type } = await getAccessToken();
+    const { data } = await getPages(access_token, token_type, 'new');
+    const { children } = data;
+    const newPage = await getFirstPagePost(children);
+    await saveArray(newPage);
+    option = undefined;
+  } else if (option == 7) {
     option = undefined;
   }
 }
