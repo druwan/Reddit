@@ -153,7 +153,7 @@ export const sendToDiscord = async () => {
         embeds: [
           {
             author: {
-              name: `https://reddit.com${permalink}`,
+              name: `${title}`,
               url: `https://reddit.com${permalink}`,
             },
             title: `${title}`,
@@ -173,7 +173,10 @@ export const sendToDiscord = async () => {
         body: JSON.stringify(postData),
       };
 
-      fetch(process.env.discordWebhook, options);
+      fetch(
+        `${process.env.discordURL}/webhooks/${process.env.discordWebhookID}/${process.env.discordWebhookToken}?wait=true`,
+        options
+      );
     }, 1500 * index);
   });
 };
